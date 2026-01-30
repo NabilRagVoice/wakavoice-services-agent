@@ -52,23 +52,30 @@ def get_health_advice(
 ) -> dict:
     """
     Analyse des symptômes et conseils santé, remèdes et recommandations.
-    
+
     SYMPTÔMES SUPPORTÉS:
     - Maux de tête, fièvre, toux
     - Ballonnement, douleur abdominale
     - Fatigue, insomnie
     - Douleurs musculaires
-    
+
     ⚠️ AVERTISSEMENT: Conseils généraux uniquement. Consulter un médecin pour tout problème sérieux.
-    
+
     Args:
-        symptoms: Description des symptômes ressentis
+        symptoms: Description des symptômes ressentis (OBLIGATOIRE, minimum 3 caractères). Exemples: "mal de tête", "fièvre depuis 2 jours", "toux sèche"
         age: Âge de la personne (pour conseils adaptés)
         sex: Sexe ("male" ou "female")
-    
+
     Returns:
         dict: Conseils santé, remèdes naturels et indication de consultation
     """
+    # Validation: symptoms obligatoire et non vide
+    if not symptoms or len(symptoms.strip()) < 3:
+        return {
+            "status": "error",
+            "message": "Veuillez décrire vos symptômes (minimum 3 caractères). Exemple: 'mal de tête', 'fièvre'"
+        }
+
     return tool_health_advice.get_health_advice(
         symptoms=symptoms,
         age=age,
@@ -167,7 +174,7 @@ def get_government_service_info(
 ) -> dict:
     """
     Informations sur les démarches administratives au Burkina Faso.
-    
+
     SERVICES DISPONIBLES:
     - Passeport
     - Carte d'identité nationale (CNIB)
@@ -177,19 +184,26 @@ def get_government_service_info(
     - Casier judiciaire
     - Carte grise
     - Visa
-    
+
     INFORMATIONS FOURNIES:
     - Documents requis
     - Procédure étape par étape
     - Coûts et délais
     - Adresses et contacts
-    
+
     Args:
-        service_name: Nom du service (ex: "Passeport", "CNIB", "Permis")
-    
+        service_name: Nom du service OBLIGATOIRE. Valeurs acceptées: "Passeport", "CNIB", "Permis de conduire", "Acte de naissance", "Certificat de nationalité", "Casier judiciaire", "Carte grise", "Visa"
+
     Returns:
         dict: Procédure complète avec documents, coûts et délais
     """
+    # Validation: service_name obligatoire
+    if not service_name or len(service_name.strip()) < 2:
+        return {
+            "status": "error",
+            "message": "Veuillez préciser le service recherché. Services disponibles: Passeport, CNIB, Permis de conduire, Acte de naissance, Certificat de nationalité, Casier judiciaire, Carte grise, Visa"
+        }
+
     return tool_government_services.execute({
         "service_name": service_name
     })
